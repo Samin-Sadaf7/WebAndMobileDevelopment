@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Web development Lab</title>
+    <link rel="stylesheet" type="text/css" href="TaskManager.css" />
+  </head>
+  <body>
+    <h2>Task Manager</h2>
+    <div id="taskManager"></div>
+    <div style="text-align: center">
+      <div id="dateSelector">
+        <button onclick="moveDateRangeBackward()">←</button>
+        <span id="dateRange"></span>
+        <button onclick="moveDateRangeForward()">→</button>
+      </div>
+    </div>
+    <div class="content" style="margin-left: 20%">
+      <div style="text-align: center" style="margin-left: 20%">
+        <table border="1" id="taskManagerTable">
+          <thead>
+            <tr>
+              <th rowspan="2">Day</th>
+              <th colspan="6">Tasks</th>
+            </tr>
+            <tr>
+              <th>Priority 0</th>
+              <th>Priority 1</th>
+              <th>Priority 2</th>
+              <th>Priority 3</th>
+              <th>Priority 4</th>
+              <th>Priority 5</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr id="MondayRow">
+              <td>Monday</td>
+            </tr>
+            <tr id="TuesdayRow">
+              <td>Tuesday</td>
+            </tr>
+            <tr id="WednesdayRow">
+              <td>Wednesday</td>
+            </tr>
+            <tr id="ThursdayRow">
+              <td>Thursday</td>
+            </tr>
+            <tr id="FridayRow">
+              <td>Friday</td>
+            </tr>
+            <tr id="SaturdayRow">
+              <td>Saturday</td>
+            </tr>
+            <tr id="SundayRow">
+              <td>Sunday</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <script type="text/javascript" src="TaskManager.js"></script>
+    <script type="text/javascript">
+      let currentDate = new Date();
+
+      function updateDateRangeHeader() {
+        const dateRange = document.getElementById("dateRange");
+        dateRange.textContent = `${currentDate.toLocaleDateString()} - ${new Date(
+          currentDate.getTime() + 6 * 24 * 60 * 60 * 1000
+        ).toLocaleDateString()}`;
+      }
+
+      function moveDateRangeBackward() {
+        currentDate.setDate(currentDate.getDate() - 7);
+        updateDateRangeHeader();
+        tm.render(currentDate);
+      }
+
+      function moveDateRangeForward() {
+        currentDate.setDate(currentDate.getDate() + 7);
+        updateDateRangeHeader();
+        tm.render(currentDate);
+      }
+
+      function getRandomIntInclusive(min, max) {
+        const minCeiled = Math.ceil(min);
+        const maxFloored = Math.floor(max);
+        return Math.floor(
+          Math.random() * (maxFloored - minCeiled + 1) + minCeiled
+        );
+      }
+
+      function generateTasks() {
+        let tasks = [];
+        for (let i = -10; i < 10; i++) {
+          const currentDate = new Date();
+          currentDate.setDate(currentDate.getDate() + i);
+          for (let j = 0; j < getRandomIntInclusive(1, 5); j++) {
+            const task = {
+              name: "Task" + Math.floor(Math.random() * 100) + 1,
+              dueDate: currentDate,
+              priority: getRandomIntInclusive(0, 5),
+            };
+            tasks.push(task);
+          }
+        }
+        return tasks;
+      }
+
+      let tasksInfo = generateTasks();
+      let tm = new TaskManager(tasksInfo, "taskManager", function (
+        taskDetails
+      ) {
+        console.log(
+          "Task Info:",
+          taskDetails.name +
+            "/" +
+            taskDetails.dueDate +
+            "/" +
+            taskDetails.priority
+        );
+      });
+      console.log(tasksInfo);
+
+      tm.render = function (selectedDate) {
+        const daysOfWeek = [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday",
+        ];
+
+        for (let i = 0; i < daysOfWeek.length; i++) {
+          const day = daysOfWeek[i];
+          const rowId = day + "Row";
+          const row = document.getElementById(rowId);
+
+          row.innerHTML = "<td>" + day + "</td>";
+
+          const tasksForDay = tasksInfo.filter((task) => {
+            const taskDate = new Date(task.dueDate);
+            const adjustedIndex = (taskDate.getDay() % 7) + 1;
+            return (
+              adjustedIndex === i &&
+              taskDate.toDateString() === selectedDate.toDateString()
+            );
+          });
+
+          for (let priority = 0; priority <= 5; priority++) {
+            console.log(tasksForDay);
+            const priorityTasks = tasksForDay.filter(
+              (task) => task.priority === priority
+            );
+
+            const cell = document.createElement("td");
+
+            priorityTasks.forEach((task) => {
+              const taskButton = document.createElement("button");
+              taskButton.textContent = task.name;
+              taskButton.onclick = function () {
+                console.log(task);
+              };
+              cell.appendChild(taskButton);
+            });
+
+            row.appendChild(cell);
+          }
+        }
+      };
+
+      updateDateRangeHeader();
+      tm.render(currentDate);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="styles.css" />
+    <title>Form</title>
+  </head>
+  <body>
+    <div class="sidebar">
+      <h3>Menu</h3>
+      <p><a href="home.html">Home</a></p>
+      <p><a href="table.html">Table</a></p>
+      <p><a href="list.html">List</a></p>
+      <p><a href="form.html">Form</a></p>
+    </div>
+    <div class="content" style="margin-left: 10%">
+      <h3 style="text-align: left">Form</h3>
+      <form>
+        <label for="id">ID:</label>
+        <input type="text" placeholder="ID" id="id" name="id" />
+        <label for="name">Name:</label>
+        <input
+          type="text"
+          placeholder="put your full name"
+          id="name"
+          name="name"
+        />
+        <label for="mail">Email:</label>
+        <input
+          type="email"
+          placeholder="Enter your valid email"
+          id="mail"
+          name="mail"
+        />
+        <label for="program">Program:</label>
+        <select id="program" name="program">
+          <option value="cse">CSE</option>
+          <option value="mpe">MPE</option>
+          <option value="btm">BTM</option>
+        </select>
+
+        <label for="comment">Comment</label>
+        <textarea
+          placeholder="Give your valuable feedback"
+          id="review"
+          name="review"
+          rows="4"
+          cols="50"
+        ></textarea>
+
+        <input type="submit" value="Submit" />
+        <input type="submit" value="Clear" />
+      </form>
+    </div>
+    <div class="footer">
+      <p>copyright@saminsadaf63</p>
+    </div>
+  </body>
+</html>
